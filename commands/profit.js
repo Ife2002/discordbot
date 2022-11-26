@@ -1,8 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { request } = require('undici');
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import getCollection from '../controllers/test.js';
+import { request } from 'undici';
 
-
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName('profit')
 		.setDescription('Returns the profit on an nft collection slug')
@@ -10,7 +10,9 @@ module.exports = {
 			option.setName('collection_slug')
 				.setDescription('Enter the collection slug')
 				// Ensure the text will fit in an embed description, if the user chooses that option
-				.setMaxLength(2000)),
+				.setMaxLength(2000).setRequired(true)),
+	
+
 	
 	async execute(interaction) {
 		// const exampleEmbed = new EmbedBuilder()
@@ -20,9 +22,14 @@ module.exports = {
 
 		// const Result = await request(`https://api.opensea.io/api/v1/collection/${collection_slug}`);
         // const { file } = await Result.body.json();
+
+
 		const input = interaction.options.getString('collection_slug')
-		const Result = await request(`https://api.opensea.io/api/v1/collection/${input}`);
-        const  file  = await Result.body.json();
-		await interaction.reply(file)
+		const response = getCollection(`${input}`)
+        console.log(response)
+
+
+	    interaction.reply(response);
 	},
 };
+

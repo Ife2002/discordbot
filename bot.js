@@ -1,18 +1,18 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
-require('dotenv').config()
+import fs from 'fs';
+import path from 'node:path';
+import { Client, Events, GatewayIntentBits, Collection } from 'discord.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands').filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-	const filePath = path.join(commandsPath, file);
-	const command = require(filePath);
-	client.commands.set(command.data.name, command);
+	const command = await import(`./commands/${file}`);
+    client.commands.set(command.default.data.name, command);
 }
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -23,7 +23,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction);
+		await command.default.execute(interaction);
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
