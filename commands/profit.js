@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
-import getCollection from '../controllers/test.js';
+// import getCollection from '../controllers/test.js';
 import { request } from 'undici';
 
 export default {
@@ -25,11 +25,19 @@ export default {
 
 
 		const input = interaction.options.getString('collection_slug')
-		const response = getCollection(`${input}`)
-        console.log(response)
+		const {
+			statusCode,
+			headers,
+			trailers,
+			body
+		  }= await request(`https://api.opensea.io/api/v1/collection/${input}`);
+		//   const response = await body.json();
+		// // const response = getCollection(`${input}`)
+        // console.log(response)
+        const message = await body.text();
+		const result = message.slice(0, 1800);
 
-
-	    interaction.reply(response);
+	    interaction.reply(`${result}`);
 	},
 };
 

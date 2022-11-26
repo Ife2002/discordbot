@@ -4,7 +4,7 @@ import { request } from 'undici';
 import { Buffer } from 'node:buffer';
 
 
-const getCollection = async (name, req, res) => {
+const getCollection = async (name) => {
   try {
     const {
       statusCode,
@@ -13,10 +13,9 @@ const getCollection = async (name, req, res) => {
       body
     }= await request(`https://api.opensea.io/api/v1/collection/${name}`);
     const response = await body.json();
-    console.log(res)
-    console.log(req)
+
     console.log('response received', statusCode)
-    console.log('data', await body.json())
+    console.log(response)
     return response;
     
   } catch (error) {
