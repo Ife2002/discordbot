@@ -15,13 +15,7 @@ export default {
 
 	
 	async execute(interaction) {
-		// const exampleEmbed = new EmbedBuilder()
-	    // .setColor(0x0099FF)
-    	// .setTitle('Some title')
-    	// .setURL('https://discord.js.org/');
-
-		// const Result = await request(`https://api.opensea.io/api/v1/collection/${collection_slug}`);
-        // const { file } = await Result.body.json();
+		
 
 
 		const input = interaction.options.getString('collection_slug')
@@ -31,13 +25,44 @@ export default {
 			trailers,
 			body
 		  }= await request(`https://api.opensea.io/api/v1/collection/${input}`);
-		//   const response = await body.json();
-		// // const response = getCollection(`${input}`)
-        // console.log(response)
-        const message = await body.text();
-		const result = message.slice(0, 1800);
+		const response = await body.json();
+		// const response = getCollection(`${input}`)
+         console.log(response)
+        // const message = await body.text();
+		// const result = message.slice(0, 180);
+		const exampleEmbed = new EmbedBuilder()
+		.setColor(0x0099FF)
+		.setTitle(`Collection name : ${response.collection.slug}`)
+		.setURL(`https://opensea.io/collection/${input}`)
+		.setAuthor({ name: 'Crest Bot', url: `https://opensea.io/collection/${input}` })
+		.setDescription(`${response.collection.description}`)
+		// .setThumbnail('https://i.imgur.com/AfFp7pu.png')
+		.addFields(
+			{ name: '#Minted', value: `${response.collection.stats.count}` },
+			{ name: '#Minted Cost', value: 'Some value here' },
+			{ name: '#Avg Minted Cost', value: `${response.collection.stats.average_price}` },
+			{ name: '#Total Bought', value: `${response.collection.stats.total_sales}` },
+			{ name: '#Total Cost', value: 'Some value here' },
+			{ name: '#Avg Total Cost', value: 'Some value here' },
+			{ name: '#Sold', value: 'Some value here' },
+			{ name: '#Total Revenue', value: 'Some value here' },
+			{ name: '#Avg Sale Price', value: 'Some value here' },
+			{ name: '#Total Fees', value: 'Some value here' },
+			{ name: '#Total Profit Realized', value: 'Some value here' },
+			{ name: '#Realized ROI', value: 'Some value here' },
+			{ name: '\u200B', value: '\u200B' },
+			{ name: 'Regular field title', value: 'Some value here' },
+		)
+		// .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
+		.setImage('https://i.imgur.com/AfFp7pu.png')
+		.setTimestamp()
+		.setFooter({ text: 'Curated by crest', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
 
-	    interaction.reply(`${result}`);
+		// const Result = await request(`https://api.opensea.io/api/v1/collection/${collection_slug}`);
+        // const { file } = await Result.body.json();
+		
+
+		await interaction.reply({ embeds: [exampleEmbed] });
 	},
 };
 
