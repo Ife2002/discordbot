@@ -1,0 +1,20 @@
+{
+    "data": {
+        "minted": "how many tokens of the collection passed the address has",
+        "minted_cost": "How much eth the address used to mint",
+        "average_mint_cost": "minted cost/minted",
+        "bought_secondary": "how many tokens they bought on secondary manrket places like opensea",
+        "secondary_cost": "how they bought it on the secondary market",
+        "average_sec_cost": "secondary_cost/bought_secondary",
+        "total_bought": "minted + bought_secondary",
+        "total_cost": "minted_cost + ",
+        "average_total_cost": "",
+        "sold": "",
+        "total_revenue": "",
+        "avg_sale_price": "",
+        "total_fees": "",
+        "total_fees_realized": "",
+        "realized_roi": ""
+
+    }
+}

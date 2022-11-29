@@ -25,6 +25,9 @@ export default {
 			trailers,
 			body
 		  }= await request(`https://api.opensea.io/api/v1/collection/${input}`);
+		  //get api endpoint with erc adrress here
+		  //populate the adsress with the json
+		  //remove picture
 		const response = await body.json();
 		// const response = getCollection(`${input}`)
          console.log(response)
@@ -36,11 +39,11 @@ export default {
 		.setURL(`https://opensea.io/collection/${input}`)
 		.setAuthor({ name: 'Crest Bot', url: `https://opensea.io/collection/${input}` })
 		.setDescription(`${response.collection.description}`)
-		// .setThumbnail('https://i.imgur.com/AfFp7pu.png')
+		.setThumbnail(`${response?.collection.image_url}`)
 		.addFields(
 			{ name: '#Minted', value: `${response.collection.stats.count}` },
 			{ name: '#Minted Cost', value: 'Some value here' },
-			{ name: '#Avg Minted Cost', value: `${response.collection.stats.average_price}` },
+			{ name: '#Avg Minted Cost', value: `${response.collection.stats.average_price}Ξ` },
 			{ name: '#Total Bought', value: `${response.collection.stats.total_sales}` },
 			{ name: '#Total Cost', value: 'Some value here' },
 			{ name: '#Avg Total Cost', value: 'Some value here' },
@@ -48,7 +51,7 @@ export default {
 			{ name: '#Total Revenue', value: 'Some value here' },
 			{ name: '#Avg Sale Price', value: 'Some value here' },
 			{ name: '#Total Fees', value: 'Some value here' },
-			{ name: '#Total Profit Realized', value: 'Some value here' },
+			{ name: '#Total Profit Realized', value: '⬇️/⬆️' },
 			{ name: '#Realized ROI', value: 'Some value here' },
 			{ name: '\u200B', value: '\u200B' },
 			{ name: 'Regular field title', value: 'Some value here' },

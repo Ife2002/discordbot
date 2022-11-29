@@ -8,13 +8,17 @@
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
     "erlpack": "github:discord/erlpack",
+    "html2canvas": "^1.4.1",
+    "http": "^0.0.1-security",
     "iso-8859-2": "^3.0.4",
     "node-fetch": "^3.3.0",
+    "nodemon": "^2.0.20",
     "undici": "^5.12.0",
     "utf-8-validate": "^5.0.10",
     "zlib-sync": "^0.1.7"
   },
   "scripts": {
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "server": "nodemon ./server.js localhost 3000"
   }
 }
