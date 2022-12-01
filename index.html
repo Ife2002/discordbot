@@ -27,7 +27,11 @@
     </div>
    <div class="bg-[#1652f0] rounded-[40px] h-[80px] w-[80px] absolute z-10 mx-[5%]"></div>
     <div class="bg-black h-[250px] w-[500px] px-[5%]">
-      <h1 class="text-white font-bold text-[20px] mt-[10%]">Vahalla</h1>
+      <script type="module" src="/commands/profit.js">
+        document.body.innerHTML
+      `<h1 class="text-white font-bold text-[20px] mt-[10%]">${response.collection.slug}</h1>` 
+    </script>
+    
       <div class="w-[100%] flex justify-center item-center">
         <div class="bg-[#1E1E1E] h-[80px] w-[100%] mt-[2%] px-[3%] rounded-[5px] flex item-center justify-between">
             <div class="h-[100%] py-[4%] items-stretch text-white">
@@ -74,5 +78,6 @@
         });
       });
     </script>
+    <script src="/commands/profit.js"></script>
   </body>
 </html>
