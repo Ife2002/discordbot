@@ -1,7 +1,6 @@
 {
   "type": "module",
   "dependencies": {
-    "@discordjs/voice": "^0.13.0",
     "@napi-rs/canvas": "^0.1.30",
     "aws-sdk": "^2.1266.0",
     "axios": "^1.2.0",
