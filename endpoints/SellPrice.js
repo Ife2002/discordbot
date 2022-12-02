@@ -26,10 +26,10 @@ export default async function getSellPrice(Useraddress, nftAddress) {
         initialValue
       );
  const meanPrice = sumPrices/length
-  console.log(arr)
-  console.log(`totalPrice: ${sumPrices}`)
+  // console.log(arr)
+  // console.log(`totalPrice: ${sumPrices}`)
   
-  console.log(length)
+  // console.log(length)
   //x is equal to in_price
   
   return sumPrices   

@@ -26,7 +26,7 @@ client.on(Events.InteractionCreate, async interaction => {
 		await command.default.execute(interaction);
 	} catch (error) {
 		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		await interaction.reply({ content: 'There was an error while executing this command!. Please cross-check address/slug and try again', ephemeral: true });
 	}
 	console.log(interaction);
 });
