@@ -1,8 +1,5 @@
 {
   "type": "module",
-  "engines": { 
-    "node": ">=14.x"
-   },
   "dependencies": {
     "@napi-rs/canvas": "^0.1.30",
     "axios": "^1.2.0",

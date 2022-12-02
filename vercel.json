@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "name": "crest bot",
+    "builds": [
+       { "src": "bot.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+       { "src": "/(.*)", "dest": "/bot.js" }
+    ]
+ }
