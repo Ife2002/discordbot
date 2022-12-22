@@ -1,13 +1,15 @@
 import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import getMinted from '../endpoints/Minted.js';
 import getSellPrice from '../endpoints/SellPrice.js';
+import getCollectionInfo from '../endpoints/collectionInfo.js';
 import getBuyCost from '../endpoints/buyCost.js';
 import getTotaltokens from '../endpoints/TotalTokens.js';
 import getTokenStats from '../endpoints/TokenStats.js';
-import getUrl from '../endpoints/banner.js';
-import { createCanvas, Image } from '@napi-rs/canvas'
+import { createCanvas, Image, loadImage, GlobalFonts } from '@napi-rs/canvas'
 import { request } from 'undici';
 import { readFile } from 'fs/promises'
+import path,{ join } from 'path';
+import { isNumberObject } from 'util/types';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -40,7 +42,7 @@ export default {
 		  //populate the adsress with the json
 		  //remove picture
 		const response = await body.json();
-
+        
 		const collectionAddress = response.collection.primary_asset_contracts[0].address
 		const minted = await getMinted(useraddress, collectionAddress);
 		const buycost = await getBuyCost(useraddress, collectionAddress);
@@ -49,12 +51,15 @@ export default {
 		const userStats = await getTokenStats(useraddress, collectionAddress);
 		
 		//calculator
+		const mintedSafe = (minted != Number)? `0` : `${minted}`
 		const secondary = userStats.total_erc721_recieved - userStats.mint_count
 		const avgSecCost = userStats.total_eth_sent/secondary
+		const avgSecCostSafe = ((avgSecCost != Number) || (avgSecCost == Infinity))? `0` : `${avgSecCost}`
 		const avgTotCost = userStats.total_eth_sent/userStats.total_erc721_recieved
 		const avgSlePrice = userStats.total_eth_received / userStats.total_sell_qty
 		const totProfRealzd = sellprice - buycost
 		const ROI = (totProfRealzd/buycost) * 100
+		const ROIsafe = (ROI != Number)? `0` : `${ROI}`
 		const totalPrft = (totProfRealzd >= 0)? `⬆️ ${totProfRealzd} Ξ` : `⬇️ ${totProfRealzd} Ξ`;
 
 		//formater
@@ -62,61 +67,58 @@ export default {
 		const PNL = ROIstring.slice(0, 6)
 		const PNLcolor = (totProfRealzd >= 0)? '#00FF00' : 'FF0000';
 		// const minted = getMinted(collectionAddress, useraddress);
-		const canvas = createCanvas(1000, 1000);
+		const canvas = createCanvas(1500, 1500);
 		const context = canvas.getContext('2d');
-
+ 
 		const background = await readFile('./canvas.png');
 		const backgroundImage = new Image();
 		backgroundImage.src = background;
 		context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
+		const __dirname = path.resolve();
+        GlobalFonts.registerFromPath(join(__dirname, '.', 'DMSans-Bold.ttf'), 'DM-Sans')
 		
-
+// console.info(GlobalFonts.families)
 	    // This uses the canvas dimensions to stretch the image onto the entire canvas
 	    context.strokeStyle = '#0099ff00';
 		context.strokeRect(0, 0, canvas.width, canvas.height);
 
-		context.font = '24px sans-serif';
+		context.font = '40px DM-Sans';
 		context.fillStyle = '#ffffff';
-		context.fillText(`${minted} Ξ`, 72, 795);
+		context.fillText(`${minted} Ξ`, 115, 1280);
 		//ref if you ever want to use ratio in stead of pixels
 		// context.fillText(`${minted}`, canvas.width / 2.5, canvas.height / 3.5);
 
-		context.font = '24px sans-serif';
+		context.font = '40px DM-Sans';
 		context.fillStyle = '#ffffff';
-		context.fillText(`${sellprice} Ξ`, 317, 795);
+		context.fillText(`${sellprice} Ξ`, 450, 1280);
 
-		context.font = '24px sans-serif';
+		context.font = '40px DM-Sans';
 		context.fillStyle = '#ffffff';
-		context.fillText(`${userStats.total_sell_qty}`, 518, 795);
+		context.fillText(`${userStats.total_sell_qty}`, 723, 1280);
 
-		context.font = '20px sans-serif';
+		context.font = '65px DM-Sans';
+		context.fillStyle = '#ffffff';
+		context.fillText(`${response.collection.primary_asset_contracts[0].name}`, 70, 1060);
+
+		context.font = '40px DM-Sans';
 		context.fillStyle = `${PNLcolor}`;
-		context.fillText(`${PNL}%`, 850, 795);
+		context.fillText(`${PNL}%`, 1260, 1280);
 
-		context.font = '40px sans-serif';
+		context.font = '60px DM-Sans';
 		context.fillStyle = '#ffffff';
-		context.fillText(`${interaction.member.displayName}#${interaction.member.user.discriminator}`, 320, 930);
-
-		// const avatar = await readFile('crest.png');
-		// const avatarImage = new Image()
-		// avatarImage.src = avatar;
-		// context.drawImage(avatarImage, 25, 0, 200, 200);
+		context.fillText(`${interaction.member.displayName}#${interaction.member.user.discriminator}`, 500, 1450);
         
+
+// or with async/await:
+        const banner = await loadImage(`${response.collection.primary_asset_contracts[0].image_url}`)
+		context.drawImage(banner, 0, 0, 1500, 900);
 		
-       
+		const avatar = await loadImage('crest.png')
+		context.drawImage(avatar, 70, 750, 250, 250);
 
-
-// Draw cat with lime helmet
-// loadImage('canvas.png').then((image) => {
-//   ctx.drawImage(image, 0, 0, 200, 200)
-//   ctx.fillStyle = 'white'
-//   ctx.font = "10px Calibri";
-//   ctx.fillText("My TEXT!", 0, 160);
-//   ctx.fillText("My TEXT!", 0, 50);
-
-//   console.log('<img src="' + canvas.toDataURL() + '" />')
-// })
+		const qr = await loadImage('qr.png')
+		context.drawImage(qr, 1250, 50, 200, 200);
 
 
 		// const response = getCollection(`${input}`)
@@ -132,8 +134,8 @@ export default {
 		.setThumbnail(`${response?.collection.image_url}`)
 		.addFields(
 			{ name: '#Minted', value: `${userStats.mint_count}` },
-			{ name: '#Minted Cost', value: `${minted} Ξ` },
-			{ name: '#Avg Minted Cost', value: `${minted} Ξ` },
+			{ name: '#Minted Cost', value: `${mintedSafe} Ξ` },
+			{ name: '#Avg Minted Cost', value: `${mintedSafe} Ξ` },
 			{ name: '#Bought secondary', value: `${secondary}` },
 			{ name: '#Secondary cost', value: `${userStats.total_eth_sent} Ξ` },
 			{ name: '#Avg Secondary Cost', value: `${avgSecCost} Ξ` },
@@ -145,7 +147,8 @@ export default {
 			{ name: '#Avg Sale Price', value: `${avgSlePrice} Ξ` },
 			{ name: '#Total Fees', value: `2.5%` },
 			{ name: '#Total Profit Realized', value: `${totalPrft}` },
-			{ name: '#Realized ROI', value: `${ROI}%` },
+			{ name: '#Current Floor Price', value: `${response.collection.stats.floor_price} Ξ` },
+			{ name: '#Realized ROI', value: `${ROIsafe}%` },
 		)
 		//{ name: '\u200B', value: '\u200B' },
 		// .addFields({ name: 'Inline field title', value: 'Some value here', inline: true })
