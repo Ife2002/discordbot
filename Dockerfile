@@ -18,8 +18,9 @@ RUN npm install
 
 COPY . /usr/src/bot
 
-
+# Install pm2
+RUN npm install pm2 -g
 
 # Start the bot.
 
-CMD ["node", "bot.js"]
+CMD ["pm2-runtime", "start", "bot.js"]

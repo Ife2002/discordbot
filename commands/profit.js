@@ -76,20 +76,21 @@ export default {
 		context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
 		const __dirname = path.resolve();
-        GlobalFonts.registerFromPath(join(__dirname, '.', 'DMSans-Bold.ttf'), 'DM-Sans')
+        GlobalFonts.registerFromPath(join(__dirname, '.', 'GeneralSans-Bold.ttf'), 'DM-Sans')
+		GlobalFonts.registerFromPath(join(__dirname, '.', 'NotoSans-Bold.ttf'), 'Noto-Sans')
 		
 // console.info(GlobalFonts.families)
 	    // This uses the canvas dimensions to stretch the image onto the entire canvas
 	    context.strokeStyle = '#0099ff00';
 		context.strokeRect(0, 0, canvas.width, canvas.height);
 
-		context.font = '40px DM-Sans';
+		context.font = '40px Noto-Sans';
 		context.fillStyle = '#ffffff';
 		context.fillText(`${minted} Ξ`, 115, 1280);
 		//ref if you ever want to use ratio in stead of pixels
 		// context.fillText(`${minted}`, canvas.width / 2.5, canvas.height / 3.5);
 
-		context.font = '40px DM-Sans';
+		context.font = '40px Noto-Sans';
 		context.fillStyle = '#ffffff';
 		context.fillText(`${sellprice} Ξ`, 450, 1280);
 
