@@ -65,10 +65,11 @@ export default {
 		//formater
 		const ROIstring = `${ROI}`
 		const PNL = ROIstring.slice(0, 6)
-		const PNLcolor = (totProfRealzd >= 0)? '#00FF00' : 'FF0000';
+		const PNLcolor = (totProfRealzd >= 0)? '#00FF00' : '#FF0000';
 		// const minted = getMinted(collectionAddress, useraddress);
 		const canvas = createCanvas(1500, 1500);
 		const context = canvas.getContext('2d');
+		const result = minted.slice(0, 6);
  
 		const background = await readFile('./canvas.png');
 		const backgroundImage = new Image();
@@ -86,7 +87,7 @@ export default {
 
 		context.font = '40px Noto-Sans';
 		context.fillStyle = '#ffffff';
-		context.fillText(`${minted} Ξ`, 115, 1280);
+		context.fillText(`${result} Ξ`, 115, 1280);
 		//ref if you ever want to use ratio in stead of pixels
 		// context.fillText(`${minted}`, canvas.width / 2.5, canvas.height / 3.5);
 
