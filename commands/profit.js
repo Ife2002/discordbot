@@ -61,6 +61,8 @@ export default {
 		const ROI = (totProfRealzd/buycost) * 100
 		const ROIsafe = (ROI != Number)? `0` : `${ROI}`
 		const totalPrft = (totProfRealzd >= 0)? `⬆️ ${totProfRealzd} Ξ` : `⬇️ ${totProfRealzd} Ξ`;
+		const mintedString = `${minted}`
+		const mintedSlice = mintedString.slice(0 , 6);
 
 		//formater
 		const ROIstring = `${ROI}`
@@ -69,7 +71,7 @@ export default {
 		// const minted = getMinted(collectionAddress, useraddress);
 		const canvas = createCanvas(1500, 1500);
 		const context = canvas.getContext('2d');
-		const result = minted.slice(0, 6);
+		
  
 		const background = await readFile('./canvas.png');
 		const backgroundImage = new Image();
@@ -87,7 +89,7 @@ export default {
 
 		context.font = '40px Noto-Sans';
 		context.fillStyle = '#ffffff';
-		context.fillText(`${result} Ξ`, 115, 1280);
+		context.fillText(`${mintedSlice} Ξ`, 115, 1280);
 		//ref if you ever want to use ratio in stead of pixels
 		// context.fillText(`${minted}`, canvas.width / 2.5, canvas.height / 3.5);
 
