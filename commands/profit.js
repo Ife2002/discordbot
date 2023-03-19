@@ -5,6 +5,7 @@ import getCollectionInfo from '../endpoints/collectionInfo.js';
 import getBuyCost from '../endpoints/buyCost.js';
 import getTotaltokens from '../endpoints/TotalTokens.js';
 import getTokenStats from '../endpoints/TokenStats.js';
+import getRemainder from '../endpoints/Remainder.js';
 import { createCanvas, Image, loadImage, GlobalFonts } from '@napi-rs/canvas'
 import { request } from 'undici';
 import { readFile } from 'fs/promises'
@@ -49,6 +50,7 @@ export default {
 		const sellprice = await getSellPrice(useraddress, collectionAddress);
 		const totaltoken = await getTotaltokens(useraddress, collectionAddress);
 		const userStats = await getTokenStats(useraddress, collectionAddress);
+		const remaining = await getRemainder(useraddress, collectionAddress);
 		
 		//calculator
 		const mintedSafe = (minted != Number)? `0` : `${minted}`
@@ -58,7 +60,8 @@ export default {
 		const avgTotCost = userStats.total_eth_sent/userStats.total_erc721_recieved
 		const avgSlePrice = userStats.total_eth_received / userStats.total_sell_qty
 		const totProfRealzd = sellprice - buycost
-		const ROI = (totProfRealzd/buycost) * 100
+		const buycostSafe = (buycost == 0)? 1 : buycost;
+		const ROI = (totProfRealzd/buycostSafe) * 100
 		const ROIsafe = (ROI != Number)? `0` : `${ROI}`
 		const totalPrft = (totProfRealzd >= 0)? `⬆️ ${totProfRealzd} Ξ` : `⬇️ ${totProfRealzd} Ξ`;
 		const mintedString = `${minted}`
@@ -105,6 +108,10 @@ export default {
 		context.fillStyle = '#ffffff';
 		context.fillText(`${response.collection.primary_asset_contracts[0].name}`, 70, 1060);
 
+		context.font = '65px DM-Sans';
+		context.fillStyle = '#ffffff';
+		context.fillText(`${remaining} remaining`, 1060, 1060);
+
 		context.font = '40px DM-Sans';
 		context.fillStyle = `${PNLcolor}`;
 		context.fillText(`${PNL}%`, 1260, 1280);
@@ -148,6 +155,7 @@ export default {
 			{ name: '#Avg Total Cost', value: `${avgTotCost} Ξ` },
 			{ name: '#Sold', value: `${userStats.total_sell_qty}` },
 			{ name: '#Total Revenue', value: `${sellprice} Ξ` },
+			{ name: '#Total Remaining', value: `${remaining}` },
 			{ name: '#Avg Sale Price', value: `${avgSlePrice} Ξ` },
 			{ name: '#Total Fees', value: `2.5%` },
 			{ name: '#Total Profit Realized', value: `${totalPrft}` },
