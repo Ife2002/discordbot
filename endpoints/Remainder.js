@@ -17,4 +17,3 @@ export default async function getRemainder(Useraddress, nftaddress) {
   console.log(obj)
   return obj
 };
-// getRemainder("0x0000c3Caa36E2d9A8CD5269C976eDe05018f0000", "0x82cb9d20862641301c987f0b096086d32bc11b65")
