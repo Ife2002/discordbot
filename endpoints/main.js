@@ -2,6 +2,7 @@ import { request } from "undici";
 import { getTransactionData } from "./hash.js";
 import { freeMintChecker } from "./freemint.js";
 
+
 export default async function getWalletTrades(walletAddress, collectionSlug) {
   try {
     const apiKey = "ea1b7233061742b88f7307d095049381";
@@ -15,7 +16,8 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
 
     const responseJSON = await body.json();
     const response = responseJSON;
-  //  console.log(response.asset_events)
+    const test = response.asset_events;
+    console.log(test)
   // console.log(response.asset_events[0].contract_address)
     const time = response.asset_events[0].transaction.timestamp;
 
@@ -58,7 +60,7 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
 
     
     const mintChecker = walletTrades.length / numberOfUniqueTokenIDs;
-    console.log(mintChecker)
+    // console.log(mintChecker)
 
     
     // This fuction fliters all the purchases trades from the wallet trades
@@ -81,7 +83,7 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
       BuyTrades.push(earliestTrade);
     });
 
-   console.log("NfT Purchases :" + JSON.stringify(BuyTrades));
+  // console.log("NfT Purchases :" + JSON.stringify(BuyTrades));
 
     const buyEthValues = BuyTrades.map((trade) => trade.ETHValue);
     const buySum = buyEthValues.reduce((total, value) => total + value, 0);
@@ -190,7 +192,7 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
 
 // Example usage fuekinft
 const walletAddress = "0x4CBA834CA84dB941e8e794c3BAaA8736B66D5775";
-const collectionSlug = "foxpal";
+const collectionSlug = "fuekinft";
 
 getWalletTrades(walletAddress, collectionSlug)
 
@@ -224,8 +226,8 @@ const transactionHash =
   "0xc6d341cdd95a6db5d363023bc0ff63759c7cac6c3ed48c90c3a634e97b1fa6ae";
 
 const { entry, exit, traded, profitpercent, remaining } = await getWalletTrades(walletAddress, collectionSlug)
-console.log(entry);
-console.log(exit);
-console.log(traded);
-console.log(profitpercent)
-console.log(remaining)
+// console.log(entry);
+// console.log(exit);
+// console.log(traded);
+// console.log(profitpercent)
+// console.log(remaining)

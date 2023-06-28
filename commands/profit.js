@@ -6,7 +6,7 @@ import {
 import getMinted from "../endpoints/Minted.js";
 // import getSellPrice from "../endpoints/SellPrice.js";
 import getCollectionInfo from "../endpoints/collectionInfo.js";
-import getBuyCost from "../endpoints/buyCost.js";
+import getBuyCost from "../endpoints/SalePriceHistory.js";
 import getTotaltokens from "../endpoints/TotalTokens.js";
 
 // import getTokenStats from "../endpoints/TokenStats.js";
@@ -167,9 +167,9 @@ export default {
     // const result = message.slice(0, 180);
     const exampleEmbed = new EmbedBuilder()
       .setColor(0x0099ff)
-      // .setTitle(
-      //   //`Collection name : ${response.collection.primary_asset_contracts[0].name}`
-      // )
+      .setTitle(
+        `Collection name : ${response.collection.primary_asset_contracts[0].name}`
+      )
       .setURL(`https://opensea.io/collection/${input}`)
 
       // .setDescription(`${response.collection.description}`)
