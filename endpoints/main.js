@@ -1,5 +1,5 @@
 import { request } from "undici";
-import { getTransactionData } from "./hash.js";
+// import { getTransactionData } from "./hash.js";
 import { freeMintChecker } from "./freemint.js";
 
 
@@ -18,7 +18,7 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
     const response = responseJSON;
     const test = response.asset_events;
     console.log(test)
-  // console.log(response.asset_events[0].contract_address)
+    console.log(response.asset_events[0].contract_address)
     const time = response.asset_events[0].transaction.timestamp;
 
     // Empty arrays to store the extracted data

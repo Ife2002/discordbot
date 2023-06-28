@@ -1,48 +1,35 @@
-// Setup: npm install alchemy-sdk
-import { Alchemy, Network } from "alchemy-sdk";
+import axios from 'axios';
 
-const config = {
-  apiKey: "9R5XwFiqIgFRekEmtEomNMQAPO7h1vZG",
-  network: Network.ETH_MAINNET,
-};
-const alchemy = new Alchemy(config);
+const Auth = Buffer.from(
+  "56c8e981ce7940a0a77bffa425d56ed9" + ":" + "211ffcb33b4949cd9a8915df4894e80e",
+).toString("base64");
 
-// Address we want get NFT mints from
-const fromAddress = "0x4CBA834CA84dB941e8e794c3BAaA8736B66D5775";
+const chainId = 1;
+const walletAddress = "0x4CBA834CA84dB941e8e794c3BAaA8736B66D5775";
+const toBlock = 17579107;
 
-const res = await alchemy.core.getAssetTransfers({
-  fromBlock: "0x0",
-  fromAddress: fromAddress,
-  excludeZeroValue: true,
-  category: ["erc721", "erc1155"],
-});
+(async () => {
+  try {
+    const { data } = await axios.get(
+      `https://nft.api.infura.io/networks/${chainId}/accounts/${walletAddress}/assets/transfers`,
+      {
+        headers: {
+          Authorization: `Basic ${Auth}`,
+        },
+      },
+    );
 
-// Print contract address and tokenId for each NFT (ERC721 or ERC1155):
-for (const events of res.transfers) {
-    if (events.rawContract.address === '0xbb80f5ce5d443fa4fb971272841f6ebd7ab758f0') {
-      if (events.erc1155Metadata == null) {
-        console.log(
-          "ERC-721 Token Minted: ID- ",
-          events,
-          " Contract- ",
-          events.rawContract.address
-        );
-      } else {
-        for (const erc1155 of events.erc1155Metadata) {
-          console.log(
-            "ERC-1155 Token Minted: ID- ",
-            erc1155.tokenId,
-            " Contract- ",
-            events.rawContract.address
-          );
-        }
-      }
-    }
+    const response = Object.values(data)
+
+
+    const filteredResponse = response[5].filter(obj => obj.transactionHash === '0x9084043a7c986c7101354a50c1ffaf0d980517f9042dc9f900e3d13df68706ec');
+    
+    console.log(":rocket: ~ file: index.js:20 ~ result:", filteredResponse);
+  } catch (error) {
+    console.log(":rocket: ~ file: index.js:17 ~ error:", error);
   }
+})();
 
-  
-  
-  
   
   
   
