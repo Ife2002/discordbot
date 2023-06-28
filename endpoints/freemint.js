@@ -2,7 +2,7 @@
 // Alchemy key 9R5XwFiqIgFRekEmtEomNMQAPO7h1vZG
 import { Alchemy, Network } from "alchemy-sdk";
 
- async function mintChecker(walletAddress, nftAddress){
+export async function freeMintChecker(walletAddress, nftAddress){
 
   const config = {
     apiKey: "9R5XwFiqIgFRekEmtEomNMQAPO7h1vZG",
@@ -81,12 +81,12 @@ const walletAddress = "0x4CBA834CA84dB941e8e794c3BAaA8736B66D5775"
 const tokenId = "1123509012"
 
 
-mintChecker(walletAddress, nftAddress)
-    .then(result => {
-      console.log(result.minted);
-      console.log(result.type)
-      console.log(result.value)
-    })
+// freeMintChecker(walletAddress, nftAddress)
+//     .then(result => {
+//       console.log(result.minted);
+//       console.log(result.type)
+//       console.log(result.value)
+//     })
 
 
 // checkNFTMintingAndPrice(walletAddress)

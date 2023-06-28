@@ -1,5 +1,6 @@
 import { request } from "undici";
 import { getTransactionData } from "./hash.js";
+import { freeMintChecker } from "./freemint.js";
 
 export default async function getWalletTrades(walletAddress, collectionSlug) {
   try {
@@ -14,7 +15,8 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
 
     const responseJSON = await body.json();
     const response = responseJSON;
-    console.log(response.asset_events)
+  //  console.log(response.asset_events)
+  // console.log(response.asset_events[0].contract_address)
     const time = response.asset_events[0].transaction.timestamp;
 
     // Empty arrays to store the extracted data
@@ -58,11 +60,6 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
     const mintChecker = walletTrades.length / numberOfUniqueTokenIDs;
     console.log(mintChecker)
 
-    if( mintChecker === 2 ){
-
-    } else {
-
-    }
     
     // This fuction fliters all the purchases trades from the wallet trades
     const BuyTrades = [];
@@ -84,7 +81,7 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
       BuyTrades.push(earliestTrade);
     });
 
-   // console.log("NfT Purchases :" + JSON.stringify(BuyTrades));
+   console.log("NfT Purchases :" + JSON.stringify(BuyTrades));
 
     const buyEthValues = BuyTrades.map((trade) => trade.ETHValue);
     const buySum = buyEthValues.reduce((total, value) => total + value, 0);
@@ -112,16 +109,16 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
        SellTrades.push(earliestTrade);
      });
  
-    console.log("NfT Sales :" + JSON.stringify(SellTrades));
+   // console.log("NfT Sales :" + JSON.stringify(SellTrades));
  
      const sellEthValues = SellTrades.map((trade) => trade.ETHValue);
      const sellSum = sellEthValues.reduce((total, value) => total + value, 0);
      const sellMean = sellSum / sellEthValues.length;
-
+     const profit = sellSum - buySum
     
     const mintSell = []
     mintSell.push(walletTrades)
-    console.log(JSON.stringify(mintSell))
+   // console.log(JSON.stringify(mintSell))
     //use the values of the array above instead w conditionals using mintchecker as dterminant
  
     // console.log("Sell price:" + sellMean);
@@ -139,13 +136,52 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
 
     const remaining = BuyTrades.length - SellTrades.length
 
-    return{
-      entry: `${buyMean}`,
-      exit: `${sellMean}`,
-      traded: `${SellTrades.length}`,
-      profitpercent: profitPercentage,
-      remaining: `${remaining}`
-    };
+    //add mint checker here...if free mint buyMean will be like zero but if not
+    // return regular stuff
+    let minted
+    const nftAddress = response.asset_events[0].contract_address
+    const mintchecker = await freeMintChecker(walletAddress, nftAddress)
+    
+
+      .then(result => {
+        minted = result.minted
+        // console.log(result.minted);
+        // console.log(result.type)
+        // console.log(result.value)
+      })
+      
+      if (minted === true) {
+        // Perform certain actions based on the mintChecker values
+        console.log('free mint.');
+        return{
+          entry: `${0}`,
+          exit: `${sellMean}`,
+          traded: `${SellTrades.length}`,
+          profitpercent: profitPercentage,
+          remaining: `${remaining}`,
+          totRev: `${sellSum}`,
+          totBought: `0`,
+          totCost: `0`,
+          profit: `${exit}`
+        };
+      } else {
+        console.log('Not free mint.');
+        return{
+          entry: `${buyMean}`,
+          exit: `${sellMean}`,
+          traded: `${SellTrades.length}`,
+          profitpercent: profitPercentage,
+          remaining: `${remaining}`,
+          totRev: `${sellSum}`,
+          totBought: `${BuyTrades.length}`,
+          totCost: `${buySum}`,
+          profit: `${profit}`
+        };
+      }
+
+  console.log(minted)
+
+    
   } catch (error) {
     console.error("Error retrieving wallet trades:", error);
     return [];
@@ -154,7 +190,7 @@ export default async function getWalletTrades(walletAddress, collectionSlug) {
 
 // Example usage fuekinft
 const walletAddress = "0x4CBA834CA84dB941e8e794c3BAaA8736B66D5775";
-const collectionSlug = "fuekinft";
+const collectionSlug = "foxpal";
 
 getWalletTrades(walletAddress, collectionSlug)
 
@@ -188,8 +224,8 @@ const transactionHash =
   "0xc6d341cdd95a6db5d363023bc0ff63759c7cac6c3ed48c90c3a634e97b1fa6ae";
 
 const { entry, exit, traded, profitpercent, remaining } = await getWalletTrades(walletAddress, collectionSlug)
-// console.log(entry);
-// console.log(exit);
-// console.log(traded);
-// console.log(profitpercent)
-// console.log(remaining)
+console.log(entry);
+console.log(exit);
+console.log(traded);
+console.log(profitpercent)
+console.log(remaining)

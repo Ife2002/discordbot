@@ -14,6 +14,7 @@ import getTotaltokens from "../endpoints/TotalTokens.js";
 import getWalletTrades from "../endpoints/main.js";
 import { createCanvas, Image, loadImage, GlobalFonts } from "@napi-rs/canvas";
 import { request } from "undici";
+import axios from "axios";
 import { readFile } from "fs/promises";
 import path, { join } from "path";
 import { isNumberObject } from "util/types";
@@ -43,9 +44,17 @@ export default {
     const input = interaction.options.getString("collection_slug");
     const useraddress = interaction.options.getString("address");
 
-    const { body } = await request(
-      `https://api.opensea.io/api/v1/collection/${input}`
-    );
+
+    const apiUrl = `https://api.opensea.io/api/v1/collection/${input}`
+    const apiKey = 'ea1b7233061742b88f7307d095049381';
+
+    const { body } = await request(apiUrl, {
+      headers: {
+        "X-API-KEY": apiKey,
+      },
+    });
+
+    
     //get api endpoint with erc adrress here
     //populate the adsress with the json
     //remove picture
@@ -53,9 +62,7 @@ export default {
 
    // const collectionAddress = response.collection.primary_asset_contracts[0].address;
     // const minted = await getMinted(useraddress, collectionAddress);
-    const { entry, exit, traded, profitpercent, remaining } = await getWalletTrades(useraddress, input)
-    console.log(input)
-    console.log
+    const { entry, exit, traded, profitpercent, remaining, totRev, totBought, totCost, profit } = await getWalletTrades(useraddress, input)
    // const buycost = await getBuyCost(useraddress, collectionAddress);
    // const sellprice = await getSellPrice(useraddress, collectionAddress);
    // const totaltoken = await getTotaltokens(useraddress, collectionAddress);
@@ -121,7 +128,7 @@ export default {
     context.font = "65px DM-Sans";
     context.fillStyle = "#ffffff";
     context.fillText(
-      `${response.collection.primary_asset_contracts[0].name}`,
+     `${response.collection.primary_asset_contracts[0].name}`,
       70,
       1060
     );
@@ -160,13 +167,13 @@ export default {
     // const result = message.slice(0, 180);
     const exampleEmbed = new EmbedBuilder()
       .setColor(0x0099ff)
-      .setTitle(
-        `Collection name : ${response.collection.primary_asset_contracts[0].name}`
-      )
+      // .setTitle(
+      //   //`Collection name : ${response.collection.primary_asset_contracts[0].name}`
+      // )
       .setURL(`https://opensea.io/collection/${input}`)
 
-      .setDescription(`${response.collection.description}`)
-      .setThumbnail(`${response?.collection.image_url}`)
+      // .setDescription(`${response.collection.description}`)
+      // .setThumbnail(`${response?.collection.image_url}`)
       .addFields(
         { name: "#Minted", value: `${"0"}` },
         { name: "#Minted Cost", value: `${"0"} Ξ` },
@@ -174,15 +181,15 @@ export default {
         { name: "#Bought secondary", value: `${"0"}` },
         { name: "#Secondary cost", value: `${"0"} Ξ` },
         { name: "#Avg Secondary Cost", value: `${"0"} Ξ` },
-        { name: "#Total Bought", value: `${"0"}` },
-        { name: "#Total Cost", value: `${"0"} Ξ` },
-        { name: "#Avg Total Cost", value: `${"0"} Ξ` },
-        { name: "#Sold", value: `${"0"}` },
-        { name: "#Total Revenue", value: `${"0"} Ξ` },
+        { name: "#Total Bought", value: `${totBought}` },
+        { name: "#Total Cost", value: `${totCost} Ξ` },
+        { name: "#Avg Total Cost", value: `${entry} Ξ` },
+        { name: "#Sold", value: `${traded}` },
+        { name: "#Total Revenue", value: `${totRev} Ξ` },
         { name: "#Total Remaining", value: `${remaining}` },
-        { name: "#Avg Sale Price", value: `${"0"} Ξ` },
+        { name: "#Avg Sale Price", value: `${exit} Ξ` },
         { name: "#Total Fees", value: `2.5%` },
-        { name: "#Total Profit Realized", value: `${profitpercent}` },
+        { name: "#Total Profit Realized", value: `${profit}` },
         {
           name: "#Current Floor Price",
           value: `${response.collection.stats.floor_price} Ξ`,

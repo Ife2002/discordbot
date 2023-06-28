@@ -1,28 +1,32 @@
 import { request } from "undici";
+import axios from "axios";
 
-export async function getTransactionData(transactionHash) {
-  const etherscanApiKey = "8P4HSVBWRJ1C1B1KEVBF4QG94CXWF9J4PG";
-  const etherscanUrl = `https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=${transactionHash}&apikey=${etherscanApiKey}`;
+
+export async function getTransactionData() {
+  const apiKey = 'ea1b7233061742b88f7307d095049381';
+  const input = 'foxpal';
 
   try {
-    // Query the Etherscan API
-    const { body } = await request(etherscanUrl);
-    const response = await body.json();
-    const data = response;
-    // console.log(data)
 
-    const hexValue = `${data.result.value}`;
-    const decimalValue = parseInt(hexValue, 16);
-    const ETH = decimalValue / 1000000000000000000;
+    const apiUrl = `https://api.opensea.io/api/v1/collection/${input}`
+    const { body } = await request(apiUrl, {
+      headers: {
+        "X-API-KEY": apiKey,
+      },
+    });
 
-    // console.log('Transaction value in ETH:', ETH)
+    const responseJSON = await body.json();
+    const response = responseJSON;
 
-    return await ETH;
+    console.log(response)
+
+    
   } catch (error) {
     console.error("Failed to retrieve transaction data", error);
     return null;
   }
-}
+};
+
 
 // Example usage
 // const transactionHash = '0x513c1ba0bebf66436b5fed86ab668452b7805593c05073eb2d51d3a52f480a76';
